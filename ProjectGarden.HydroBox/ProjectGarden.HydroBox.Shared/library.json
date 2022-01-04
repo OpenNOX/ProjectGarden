@@ -1,0 +1,9 @@
+{
+    "name": "ProjectGarden.HydroBox.Shared",
+    "version": "0.0.0",
+    "dependencies":
+    {
+    },
+    "frameworks": "*",
+    "platforms": "*"
+}
