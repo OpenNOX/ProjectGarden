@@ -34,12 +34,17 @@ unsigned long loopMsTimestamp;
 void setup()
 {
     Serial.begin(SERIAL_BAUD_RATE);
+    Serial.println();
 
     mega2560Serial = new SerialClient(&Serial2);
-    sensorMonitor = new SensorMonitor(SENSOR_METADATA_MAP);
+    sensorMonitor = new SensorMonitor(SENSOR_METADATA_MAP, sizeof(SENSOR_METADATA_MAP) / sizeof(SENSOR_METADATA_MAP[0]));
+
+    Serial.println();
 
     mqttClient = new MqttClient();
     mqttClient->connect();
+
+    Serial.println();
 }
 
 /**

@@ -4,10 +4,8 @@
 using namespace ProjectGarden::HydroBox::Esp32;
 using namespace ProjectGarden::HydroBox::Esp32::Sensors;
 
-SensorMonitor::SensorMonitor(const MapPair<byte, SensorMetadata> sensorMetadataMap[])
+SensorMonitor::SensorMonitor(const MapPair<byte, SensorMetadata> sensorMetadataMap[], byte sensorCount)
 {
-    const byte sensorCount = sizeof(*sensorMetadataMap) / sizeof(sensorMetadataMap[0]);
-
     for (byte i = 0; i < sensorCount; i += 1)
     {
         this->addSensor(sensorMetadataMap[i].key, sensorMetadataMap[i].value);

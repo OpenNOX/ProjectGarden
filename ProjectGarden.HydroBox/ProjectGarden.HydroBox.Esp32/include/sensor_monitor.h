@@ -21,8 +21,9 @@ namespace Esp32
             /**
              * Initialize sensor monitor.
              * @param sensorMetadataMap Map between sensor data pin and metadata.
+             * @param sensorCount Number of sensors in map.
              */
-            SensorMonitor(const MapPair<byte, SensorMetadata> sensorMetadataMap[]);
+            SensorMonitor(const MapPair<byte, SensorMetadata> sensorMetadataMap[], byte sensorCount);
 
             /**
              * Check sensors for new data.
