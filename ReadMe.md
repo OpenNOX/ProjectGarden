@@ -7,4 +7,4 @@
 
 ## To Dos
 
-1. Fix how `ProjectGarden::HydroBox::Esp32::Sensors::PulseCountSensor` gets constructed so that it does not require a static counter variable and function.
+1. Fix how `WaterFlowSensor` gets constructed so that each sensor does not require a static counter variable and function.

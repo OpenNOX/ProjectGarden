@@ -1,7 +1,5 @@
-#ifndef PROJECT_GARDEN_HYDRO_BOX_ESP32_CONSTANTS_H
-#define PROJECT_GARDEN_HYDRO_BOX_ESP32_CONSTANTS_H
+#pragma once
 
-#include <map.h>
 #include <sensor_metadata.h>
 #include <sensor_model.h>
 
@@ -14,17 +12,15 @@ namespace HydroBox
 namespace Esp32
 {
     /**
-     * Map between sensor data pin and metadata.
+     * Board sensor metadata used to initialize sensors.
      */
-    const MapPair<byte, SensorMetadata> SENSOR_METADATA_MAP[] =
+    const SensorMetadata SENSOR_METADATA[] =
     {
-        { HYDRO_BOX_ENVIRONMENT_DATA_PIN, { SensorModel::DHT22, "Hydro Box Environment", "data/hydro_box/" } },
-        { AMBIENT_ENVIRONMENT_DATA_PIN, { SensorModel::DHT22, "Ambient Environment", "data/ambient/" } },
-        { RESERVOIR_TEMPERATURE_DATA_PIN, { DS18B20, "Reservoir Temperature", "data/reservoir/" } },
-        { RESERVOIR_FILL_FLOW_DATA_PIN, { FL608, "Reservoir Fill Flow", "data/reservoir/fill_" } },
+        { HYDRO_BOX_ENVIRONMENT_DATA_PIN, SensorModel::DHT22, "Hydro Box Environment", "sensor_data/hydro_box/" },
+        { AMBIENT_ENVIRONMENT_DATA_PIN, SensorModel::DHT22, "Ambient Environment", "sensor_data/ambient/" },
+        { RESERVOIR_TEMPERATURE_DATA_PIN, DS18B20, "Reservoir Temperature", "sensor_data/reservoir/" },
+        { RESERVOIR_FILL_FLOW_DATA_PIN, FL608, "Reservoir Fill Flow", "sensor_data/reservoir/fill_" },
     };
 }
 }
 }
-
-#endif

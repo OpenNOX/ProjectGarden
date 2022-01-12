@@ -1,7 +1,8 @@
 #pragma once
 
-#include <base_sensor.h>
-#include <DallasTemperature.h>
+#include <Adafruit_Sensor.h>
+#include "base_sensor.h"
+#include <DHT.h>
 
 using namespace ProjectGarden::HydroBox::Shared;
 
@@ -9,22 +10,22 @@ namespace ProjectGarden
 {
 namespace HydroBox
 {
-namespace Esp32
+namespace Shared
 {
 namespace Sensors
 {
     /**
-     * DS18B20 waterproof probe sensor used to measure temperature.
+     * DHT22 sensor used to measure temperature and humidity sensor.
      */
-    class Ds18b20Sensor : public BaseSensor
+    class Dht22Sensor : public BaseSensor
     {
         public:
             /**
-             * Initialize DS18B20 sensor.
+             * Initialize DHT22 sensor.
              * @param sensorMetadata Sensor metadata.
              * @param readFrequencyMs Read frequency in milliseconds.
              */
-            Ds18b20Sensor(SensorMetadata sensorMetadata, unsigned long readFrequencyMs);
+            Dht22Sensor(SensorMetadata sensorMetadata, unsigned long readFrequencyMs);
 
             /**
              * Get temperature reading measured in Celsius.
@@ -33,16 +34,18 @@ namespace Sensors
              */
             float temperature(unsigned long loopMsTimestamp);
 
+            /**
+             * Get relative humidity reading.
+             * @param loopMsTimestamp Main loop milliseconds timestamp to base time measurements on.
+             * @return Relative humidity reading.
+             */
+            float humidity(unsigned long loopMsTimestamp);
+
         private:
             /**
-             * Pointer to DallasTemperature interface dependency.
+             * Pointer to DHT22 sensor interface.
              */
-            OneWire* _oneWire;
-
-            /**
-             * Pointer to DS18B20 sensor interface.
-             */
-            DallasTemperature* _interface;
+            DHT* _interface;
     };
 }
 }

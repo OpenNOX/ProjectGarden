@@ -11,26 +11,26 @@ MqttClient::MqttClient()
 		MqttClient::mqtt_callback(topic, payload, length);
 	};
 
-	this->_mqttClient = new PubSubClient(this->_wifiClient);
+	_mqttClient = new PubSubClient(_wifiClient);
 
-	this->_mqttClient->setServer(MQTT_ADDRESS, MQTT_PORT);
-	this->_mqttClient->setCallback(callback);
+	_mqttClient->setServer(MQTT_ADDRESS, MQTT_PORT);
+	_mqttClient->setCallback(callback);
 }
 
 void MqttClient::connect()
 {
-	this->connectWifi();
-	this->connectMqtt();
+	connectWifi();
+	connectMqtt();
 }
 
-void MqttClient::publish(String topic, String message)
+void MqttClient::publish(const char* topic, const char* message)
 {
-	this->_mqttClient->publish(topic.c_str(), message.c_str());
+	_mqttClient->publish(topic, message);
 }
 
-void MqttClient::processIncomingMessages()
+void MqttClient::loop()
 {
-	this->_mqttClient->loop();
+	_mqttClient->loop();
 }
 
 void MqttClient::connectWifi()
@@ -44,16 +44,16 @@ void MqttClient::connectWifi()
 		delay(250);
 	}
 
-	Serial.printf("\nWi-Fi connected! IP Address: %s\n", WiFi.localIP().toString().c_str());
+	Serial.printf("Wi-Fi connected! IP Address: %s\n", WiFi.localIP().toString().c_str());
 }
 
 void MqttClient::connectMqtt()
 {
 	Serial.printf("Connecting to %s MQTT Broker server...\n", MQTT_ADDRESS);
 
-	while (this->_mqttClient->connected() == false)
+	while (_mqttClient->connected() == false)
 	{
-		if (this->_mqttClient->connect(MQTT_CLIENT_ID, MQTT_USERNAME, MQTT_PASSWORD))
+		if (_mqttClient->connect(MQTT_CLIENT_ID, MQTT_USERNAME, MQTT_PASSWORD))
 		{
 			Serial.print("MQTT server connected!\n");
 		}

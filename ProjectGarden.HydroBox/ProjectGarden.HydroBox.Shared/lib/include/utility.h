@@ -1,5 +1,4 @@
-#ifndef PROJECT_GARDEN_HYDRO_BOX_SHARED_UTILITY_H
-#define PROJECT_GARDEN_HYDRO_BOX_SHARED_UTILITY_H
+#pragma once
 
 namespace ProjectGarden
 {
@@ -8,11 +7,17 @@ namespace HydroBox
 namespace Shared
 {
     /**
-     * Hard reset board.
+     * Common serial baud rate.
      */
-    void(*hardResetBoard) (void) = 0;
-}
-}
-}
+    #define SERIAL_BAUD_RATE 115200
 
-#endif
+    /**
+     * Concatenate two strings and return a new string.
+     * @param string1 Front of string in concatenated string.
+     * @param string2 Back of string in concatenated string.
+     * @return Two strings concatenated.
+     */
+    char* concat(const char* string1, const char* string2);
+}
+}
+}

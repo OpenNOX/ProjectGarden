@@ -1,5 +1,4 @@
-#ifndef PROJECT_GARDEN_HYDRO_BOX_ESP32_MQTT_CLIENT_H
-#define PROJECT_GARDEN_HYDRO_BOX_ESP32_MQTT_CLIENT_H
+#pragma once
 
 #include <PubSubClient.h>
 #include <WiFi.h>
@@ -31,12 +30,12 @@ namespace Esp32
              * @param topic Topic to publish to.
              * @param message Message to publish.
              */
-            void publish(String topic, String message);
+            void publish(const char* topic, const char* message);
 
             /**
              * Process incoming messages and maintain connection to MQTT Broker server.
              */
-            void processIncomingMessages();
+            void loop();
 
         private:
             /**
@@ -69,5 +68,3 @@ namespace Esp32
 }
 }
 }
-
-#endif

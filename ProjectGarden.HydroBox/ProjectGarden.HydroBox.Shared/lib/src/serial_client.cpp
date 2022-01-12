@@ -1,50 +1,73 @@
 #include "serial_client.h"
-#include "shared_constants.h"
+#include "utility.h"
 
 using namespace ProjectGarden::HydroBox::Shared;
 
-SerialClient::SerialClient(HardwareSerial* hardwareSerial) : _interface { hardwareSerial }
+SerialClient::SerialClient(
+    HardwareSerial* hardwareSerial, void (*messageReceivedCallback)(char const* message))
+    : _interface { hardwareSerial }, _messageReceivedCallback { messageReceivedCallback }
 {
-    this->_interface->begin(SERIAL_BAUD_RATE);
+    _interface->begin(SERIAL_BAUD_RATE);
 }
 
-void SerialClient::transmitMessage(const String& message)
+void SerialClient::loop()
 {
-    this->_interface->print(SerialClient::_START_MESSAGE_DELIMITER + message + SerialClient::_END_MESSAGE_DELIMITER);
-}
+    char* receivedMessage = receiveMessage();
 
-String SerialClient::receiveMessage()
-{
-    while (this->_interface->available() > 0)
+    if (receivedMessage != (char*)"")
     {
-        char readChar = this->_interface->read();
+        _messageReceivedCallback(receivedMessage);
+    }
+}
 
-        if (this->_receivingMessage)
+void SerialClient::transmitMessage(const char* message)
+{
+    static char transmissionMessage[64] = { SerialClient::_START_MESSAGE_DELIMITER };
+    byte messageLength = strlen(message);
+
+    transmissionMessage[0] = SerialClient::_START_MESSAGE_DELIMITER;
+    transmissionMessage[1] = '\0';
+
+    strcat(transmissionMessage, message);
+
+    transmissionMessage[messageLength + 1] = SerialClient::_END_MESSAGE_DELIMITER;
+    transmissionMessage[messageLength + 2] = '\0';
+
+    _interface->print(transmissionMessage);
+}
+
+char* SerialClient::receiveMessage()
+{
+    static bool receivingMessage = false;
+    static char receivedMessage[64];
+    static byte messageIndex = 0;
+    static char receivedCharacter;
+
+    while (_interface->available() > 0)
+    {
+        receivedCharacter = _interface->read();
+
+        if (receivingMessage)
         {
-            if (readChar == SerialClient::_END_MESSAGE_DELIMITER)
+            if (receivedCharacter == SerialClient::_END_MESSAGE_DELIMITER)
             {
-                return this->_receivedMessage;
+                receivingMessage = false;
+                receivedMessage[messageIndex] = '\0';
+                messageIndex = 0;
+
+                return receivedMessage;
             }
             else
             {
-                this->_receivedMessage += readChar;
+                receivedMessage[messageIndex] = receivedCharacter;
+                messageIndex += 1;
             }
         }
-        else if (readChar == SerialClient::_START_MESSAGE_DELIMITER)
+        else if (receivedCharacter == SerialClient::_START_MESSAGE_DELIMITER)
         {
-            this->_receivingMessage = true;
-            this->_receivedMessage = "";
+            receivingMessage = true;
         }
     }
 
-    return "";
-}
-
-MapPair<String, float> SerialClient::parseSensorData(const String& serialMessage)
-{
-    byte delimiterIndex = serialMessage.indexOf(SerialClient::_MESSAGE_DELIMITER);
-    String mqttTopic = serialMessage.substring(0, delimiterIndex);
-    float value = serialMessage.substring(delimiterIndex + 1).toFloat();
-
-    return MapPair<String, float> { mqttTopic, value };
+    return (char*)"";
 }

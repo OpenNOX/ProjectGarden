@@ -1,5 +1,4 @@
-#ifndef PROJECT_GARDEN_HYDRO_BOX_ESP32_SECRETS_H
-#define PROJECT_GARDEN_HYDRO_BOX_ESP32_SECRETS_H
+#pragma once
 
 namespace ProjectGarden
 {
@@ -44,5 +43,3 @@ namespace Esp32
 }
 }
 }
-
-#endif

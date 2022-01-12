@@ -1,5 +1,4 @@
-#ifndef PROJECT_GARDEN_HYDRO_BOX_SHARED_SENSOR_MODEL_H
-#define PROJECT_GARDEN_HYDRO_BOX_SHARED_SENSOR_MODEL_H
+#pragma once
 
 namespace ProjectGarden
 {
@@ -26,9 +25,12 @@ namespace Shared
          * Water flow sensor.
          */
         FL608,
+
+        /**
+         * Leak detection sensor.
+         */
+        LM393,
     };
 }
 }
 }
-
-#endif

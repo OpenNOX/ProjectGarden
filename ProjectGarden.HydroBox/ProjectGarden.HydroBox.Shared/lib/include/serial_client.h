@@ -1,8 +1,7 @@
-#ifndef PROJECT_GARDEN_HYDRO_BOX_SHARED_SERIAL_CLIENT_H
-#define PROJECT_GARDEN_HYDRO_BOX_SHARED_SERIAL_CLIENT_H
+#pragma once
 
 #include <Arduino.h>
-#include "map.h"
+#include "sensor_data.h"
 
 namespace ProjectGarden
 {
@@ -11,35 +10,31 @@ namespace HydroBox
 namespace Shared
 {
     /**
-     * Serial client used to manage serial communication between boards.
+     * Serial client used to manage serial communication.
      */
     class SerialClient
     {
         public:
             /**
              * Initialize serial client.
-             * @param hardwareSerial Pointer to Serial interface used to communicate.
+             * @param hardwareSerial Pointer to serial interface used to communicate.
+             * @param messageReceivedCallback Pointer to callback function used as event handler
+             * when a message is received.
              */
-            SerialClient(HardwareSerial* hardwareSerial);
+            SerialClient(
+                HardwareSerial* hardwareSerial,
+                void (*messageReceivedCallback)(char const* message));
+
+            /**
+             * Process received messages from across serial interface.
+             */
+            void loop();
 
             /**
              * Transmit message across serial interface.
              * @param message Message to be transmitted.
              */
-            void transmitMessage(const String& message);
-
-            /**
-             * Receive and decode message sent across serial interface.
-             * @return Received message.
-             */
-            String receiveMessage();
-
-            /**
-             * Parse sensor data from serial message.
-             * @param message Serial message.
-             * @return Pointer to sensor data.
-             */
-            MapPair<String, float> parseSensorData(const String& serialMessage);
+            void transmitMessage(const char* message);
 
         private:
             /**
@@ -53,27 +48,23 @@ namespace Shared
             static const char _END_MESSAGE_DELIMITER = '}';
 
             /**
-             * Message delimiter.
-             */
-            static const char _MESSAGE_DELIMITER = ':';
-
-            /**
              * Pointer to hardware serial interface.
              */
             HardwareSerial* _interface;
 
             /**
-             * Receiving message from serial interface.
+             * Pointer to callback function used as event handler when a message is received.
+             * @param mqttTopic MQTT topic message received on.
+             * @param message Message received.
              */
-            bool _receivingMessage = false;
+            void (*_messageReceivedCallback)(char const* message);
 
             /**
-             * Received message from serial interface.
+             * Receive message from across serial interface.
+             * @return Received message.
              */
-            String _receivedMessage = "";
+            char* receiveMessage();
     };
 }
 }
 }
-
-#endif

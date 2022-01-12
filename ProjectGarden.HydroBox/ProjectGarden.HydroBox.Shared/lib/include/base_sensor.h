@@ -1,10 +1,8 @@
-#ifndef PROJECT_GARDEN_HYDRO_BOX_SHARED_BASE_SENSOR_H
-#define PROJECT_GARDEN_HYDRO_BOX_SHARED_BASE_SENSOR_H
+#pragma once
 
 #include <Arduino.h>
-#include "map.h"
+#include "sensor_data.h"
 #include "sensor_metadata.h"
-#include "sensor_model.h"
 
 namespace ProjectGarden
 {
@@ -12,17 +10,14 @@ namespace HydroBox
 {
 namespace Shared
 {
+    struct SensorData;
+
     /**
-     * Base sensor for shared properties between sensors.
+     * Base sensor.
      */
     class BaseSensor
     {
         public:
-            /**
-             * Pin sensor data pin is on.
-             */
-            const byte pin;
-
             /**
              * Sensor metadata.
              */
@@ -34,31 +29,39 @@ namespace Shared
             const unsigned long readFrequencyMs;
 
             /**
+             * Data map between MQTT topic and its value getter.
+             */
+            SensorData* dataMap;
+
+            /**
+             * Number of pairs that map between MQTT topic and its value getter.
+             */
+            const byte dataMapCount;
+
+            /**
              * Last read milliseconds timestamp.
              */
-            unsigned long lastReadMsTimestamp;
+            unsigned long lastReadMsTimestamp = 0;
 
             /**
              * Initialize base sensor.
-             * @param pin Pin sensor data pin is on.
              * @param sensorMetadata Sensor metadata.
              * @param readFrequencyMs Read frequency in milliseconds.
+             * @param dataMapCount Number of pairs that map between MQTT topic and its value getter.
              */
-            BaseSensor(byte pin, SensorMetadata sensorMetadata, unsigned long readFrequencyMs)
-                : pin { pin }, sensorMetadata { sensorMetadata }, readFrequencyMs { readFrequencyMs },
-                lastReadMsTimestamp { millis() }
-            {
-            }
+            BaseSensor(SensorMetadata sensorMetadata, unsigned long readFrequencyMs, byte dataMapCount);
 
             /**
-             * Deconstruct base sensor.
+             * Check if the read frequency duration has elapsed since the last read.
+             * @param loopMsTimestamp Main loop milliseconds timestamp to base time measurements on.
              */
-            virtual ~BaseSensor()
-            {
-            }
+            bool isReadyToRead(unsigned long loopMsTimestamp);
     };
-}
-}
-}
 
-#endif
+    /**
+     * Base sensor function pointer used to call value getter in sensor data map.
+     */
+    typedef float (BaseSensor::*ReadSensorCallbackPointer)(unsigned long);
+}
+}
+}

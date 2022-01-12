@@ -1,7 +1,5 @@
-#ifndef PROJECT_GARDEN_HYDRO_BOX_SHARED_SENSOR_METADATA_H
-#define PROJECT_GARDEN_HYDRO_BOX_SHARED_SENSOR_METADATA_H
+#pragma once
 
-#include <Arduino.h>
 #include "sensor_model.h"
 
 namespace ProjectGarden
@@ -16,6 +14,11 @@ namespace Shared
     struct SensorMetadata
     {
         /**
+         * Pin sensor data pin is on.
+         */
+        byte pin;
+
+        /**
          * Sensor model.
          */
         SensorModel sensorModel;
@@ -23,15 +26,13 @@ namespace Shared
         /**
          * Sensor description.
          */
-        String description;
+        const char* description;
 
         /**
          * MQTT topic base.
          */
-        String mqttTopicBase;
+        const char* mqttTopicBase;
     };
 }
 }
 }
-
-#endif
